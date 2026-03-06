@@ -10,33 +10,54 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - run: make
-      - name: Upload Linux binary
+      - run: ./scripts/generate-sbom.sh > sbom-linux.json
+      - run: ./scripts/generate-attention.sh > attention-linux.json
+      - run: ./scripts/generate-immutable.sh > immutable-linux.json
+      - name: Upload Linux artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: cpp-linux
-          path: build/linux/bin/*
+          name: linux-artifacts
+          path: |
+            build/linux/bin/*
+            sbom-linux.json
+            attention-linux.json
+            immutable-linux.json
 
   build-windows:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v3
       - run: msbuild project.sln
-      - name: Upload Windows binary
+      - run: ./scripts/generate-sbom.sh > sbom-windows.json
+      - run: ./scripts/generate-attention.sh > attention-windows.json
+      - run: ./scripts/generate-immutable.sh > immutable-windows.json
+      - name: Upload Windows artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: cpp-windows
-          path: build/windows/bin/*
+          name: windows-artifacts
+          path: |
+            build/windows/bin/*
+            sbom-windows.json
+            attention-windows.json
+            immutable-windows.json
 
   build-macos:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
       - run: make
-      - name: Upload macOS binary
+      - run: ./scripts/generate-sbom.sh > sbom-macos.json
+      - run: ./scripts/generate-attention.sh > attention-macos.json
+      - run: ./scripts/generate-immutable.sh > immutable-macos.json
+      - name: Upload macOS artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: cpp-macos
-          path: build/macos/bin/*
+          name: macos-artifacts
+          path: |
+            build/macos/bin/*
+            sbom-macos.json
+            attention-macos.json
+            immutable-macos.json
 
   release:
     runs-on: ubuntu-latest
@@ -48,15 +69,6 @@ jobs:
         with:
           path: ./artifacts
 
-      - name: Generate SBOM
-        run: ./scripts/generate-sbom.sh
-
-      - name: Generate attention.json
-        run: ./scripts/generate-attention.sh
-
-      - name: Generate immutable.json
-        run: ./scripts/generate-immutable.sh
-
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -64,53 +76,92 @@ jobs:
           tag_name: v${{ github.run_number }}
           release_name: "ImmutableOS Build ${{ github.run_number }}"
 
+      # Upload Linux
       - name: Upload Linux binary
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./artifacts/cpp-linux/*
+          asset_path: ./artifacts/linux-artifacts/build/linux/bin/*
           asset_name: cpp-linux-${{ github.run_number }}.zip
           asset_content_type: application/zip
+      - name: Upload Linux docs
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./artifacts/linux-artifacts/sbom-linux.json
+          asset_name: sbom-linux-${{ github.run_number }}.json
+          asset_content_type: application/json
+      - name: Upload Linux attention
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./artifacts/linux-artifacts/attention-linux.json
+          asset_name: attention-linux-${{ github.run_number }}.json
+          asset_content_type: application/json
+      - name: Upload Linux immutable
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./artifacts/linux-artifacts/immutable-linux.json
+          asset_name: immutable-linux-${{ github.run_number }}.json
+          asset_content_type: application/json
 
+      # Upload Windows
       - name: Upload Windows binary
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./artifacts/cpp-windows/*
+          asset_path: ./artifacts/windows-artifacts/build/windows/bin/*
           asset_name: cpp-windows-${{ github.run_number }}.zip
           asset_content_type: application/zip
+      - name: Upload Windows docs
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./artifacts/windows-artifacts/sbom-windows.json
+          asset_name: sbom-windows-${{ github.run_number }}.json
+          asset_content_type: application/json
+      - name: Upload Windows attention
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./artifacts/windows-artifacts/attention-windows.json
+          asset_name: attention-windows-${{ github.run_number }}.json
+          asset_content_type: application/json
+      - name: Upload Windows immutable
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./artifacts/windows-artifacts/immutable-windows.json
+          asset_name: immutable-windows-${{ github.run_number }}.json
+          asset_content_type: application/json
 
+      # Upload macOS
       - name: Upload macOS binary
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./artifacts/cpp-macos/*
+          asset_path: ./artifacts/macos-artifacts/build/macos/bin/*
           asset_name: cpp-macos-${{ github.run_number }}.zip
           asset_content_type: application/zip
-
-      - name: Upload SBOM
+      - name: Upload macOS docs
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./sbom.json
-          asset_name: sbom-${{ github.run_number }}.json
+          asset_path: ./artifacts/macos-artifacts/sbom-macos.json
+          asset_name: sbom-macos-${{ github.run_number }}.json
           asset_content_type: application/json
-
-      - name: Upload attention.json
+      - name: Upload macOS attention
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./attention.json
-          asset_name: attention-${{ github.run_number }}.json
+          asset_path: ./artifacts/macos-artifacts/attention-macos.json
+          asset_name: attention-macos-${{ github.run_number }}.json
           asset_content_type: application/json
-
-      - name: Upload immutable.json
+      - name: Upload macOS immutable
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./immutable.json
-          asset_name: immutable-${{ github.run_number }}.json
-          asset_content_type: application/json          asset_path: ./immutable.json
-
-  
-  
+          asset_path: ./artifacts/macos-artifacts/immutable-macos.json
+          asset_name: immutable-macos-${{ github.run_number }}.json
+          asset_content_type: application/json
