@@ -1,0 +1,133 @@
+name: Consolidated CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build-latex:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Install LaTeX
+        run: sudo apt-get update && sudo apt-get install -y texlive-full
+      - name: Compile Manifesto
+        run: pdflatex manifesto.tex
+        working-directory: docs-latex
+      - name: Upload PDF artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: manuscript-pdf
+          path: docs-latex/manifesto.pdf
+
+  build-python:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
+        working-directory: ai-python
+      - name: Run Python tests
+        run: echo "No Python tests configured yet."
+        working-directory: ai-python
+
+  build-solidity:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - name: Install Hardhat
+        run: npm install
+        working-directory: blockchain-solidity
+      - name: Compile Contracts
+        run: npx hardhat compile
+        working-directory: blockchain-solidity
+      - name: Run Solidity tests
+        run: echo "No Solidity tests configured yet."
+        working-directory: blockchain-solidity
+
+  build-cpp:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Setup C++ environment
+        run: sudo apt-get update && sudo apt-get install -y build-essential cmake
+      - name: Configure project
+        run: |
+          mkdir -p build
+          cd build
+          cmake ..
+        working-directory: Stickler-Protocol-The-Cabal-Nexus
+      - name: Build project
+        run: |
+          cd build
+          make
+        working-directory: Stickler-Protocol-The-Cabal-Nexus
+      - name: Run C++ tests
+        run: |
+          cd build
+          ctest --output-on-failure
+        working-directory: Stickler-Protocol-The-Cabal-Nexus
+      - name: Upload C++ build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: cpp-build
+          path: Stickler-Protocol-The-Cabal-Nexus/build/
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [build-latex, build-python, build-solidity, build-cpp]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1
+        with:
+          tag_name: v${{ github.run_number }}
+          release_name: Release ${{ github.run_number }}
+          body: "Automated release from CI/CD pipeline."
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Download LaTeX artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: manuscript-pdf
+      - name: Upload LaTeX Release Asset
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./docs-latex/manifesto.pdf
+          asset_name: manuscript-${{ github.run_number }}.pdf
+          asset_content_type: application/pdf
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Download C++ artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: cpp-build
+      - name: Upload C++ Release Asset
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./Stickler-Protocol-The-Cabal-Nexus/build/
+          asset_name: cpp-build-${{ github.run_number }}.zip
+          asset_content_type: application/zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
