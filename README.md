@@ -5,7 +5,7 @@ This repository embodies Pedrosa’s Emergence: contextual intelligence, social 
 
 ---
 
-📜 Manifesto
+📜 Manifest
 - Written in LaTeX  
 - Declares the rupture of paradigms in AI  
 - Documents interoperability of generative frameworks  
