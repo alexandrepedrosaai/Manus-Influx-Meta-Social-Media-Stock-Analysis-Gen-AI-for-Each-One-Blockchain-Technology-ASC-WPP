@@ -1,0 +1,2 @@
+attention:
+	./scripts/generate-attention.sh > attention-linux.json
