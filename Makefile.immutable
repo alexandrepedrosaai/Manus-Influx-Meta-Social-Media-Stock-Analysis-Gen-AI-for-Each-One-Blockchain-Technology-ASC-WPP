@@ -1,0 +1,2 @@
+immutable:
+	./scripts/generate-immutable.sh > immutable-linux.json
