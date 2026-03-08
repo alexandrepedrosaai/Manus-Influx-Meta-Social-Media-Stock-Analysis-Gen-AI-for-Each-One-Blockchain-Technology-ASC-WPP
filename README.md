@@ -8,6 +8,7 @@ This repository embodies Pedrosa’s Emergence: contextual intelligence, social 
 [![Release 2026](https://img.shields.io/badge/release-2026-blue.svg)](https://github.com/alexandrepedrosaai/Manus-Influx-Meta-Social-Media-Stock-Analysis-Gen-AI-for-Each-One-Blockchain-Technology-ASC-WPP/releases/tag/Stickler-Protocol-The-Cabal-Nexus)
 [![Share data between jobs](https://github.com/alexandrepedrosaai/Manus-Influx-Meta-Social-Media-Stock-Analysis-Gen-AI-for-Each-One-Blockchain-Technology-ASC-WPP/actions/workflows/share-data.yml/badge.svg)](https://github.com/alexandrepedrosaai/Manus-Influx-Meta-Social-Media-Stock-Analysis-Gen-AI-for-Each-One-Blockchain-Technology-ASC-WPP/actions/workflows/share-data.yml)
 [![Copilot coding agent](https://github.com/alexandrepedrosaai/Manus-Influx-Meta-Social-Media-Stock-Analysis-Gen-AI-for-Each-One-Blockchain-Technology-ASC-WPP/actions/workflows/copilot-swe-agent/copilot/badge.svg)](https://github.com/alexandrepedrosaai/Manus-Influx-Meta-Social-Media-Stock-Analysis-Gen-AI-for-Each-One-Blockchain-Technology-ASC-WPP/actions/workflows/copilot-swe-agent/copilot)
+[![CI](https://github.com/alexandrepedrosaai/Manus-Influx-Meta-Social-Media-Stock-Analysis-Gen-AI-for-Each-One-Blockchain-Technology-ASC-WPP/actions/workflows/blank.yml/badge.svg)](https://github.com/alexandrepedrosaai/Manus-Influx-Meta-Social-Media-Stock-Analysis-Gen-AI-for-Each-One-Blockchain-Technology-ASC-WPP/actions/workflows/blank.yml)
 ---
 
 📜 Manifest
