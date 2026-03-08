@@ -1,21 +1,11 @@
-all: build sbom attention immutable
+package main
 
-# Compilar o main.go
-build:
-	mkdir -p build/linux/bin
-	go build -o build/linux/bin/app main.go
+import (
+	"fmt"
+)
 
-# Gerar manifestos
-sbom:
-	./scripts/generate-sbom.sh > sbom-linux.json
-
-attention:
-	./scripts/generate-attention.sh > attention-linux.json
-
-immutable:
-	./scripts/generate-immutable.sh > immutable-linux.json
-
-# Limpar binários e manifestos
-clean:
-	rm -rf build/linux/bin/*
-	rm -f sbom-linux.json attention-linux.json immutable-linux.json
+// main is a small placeholder entrypoint that ensures the CI build
+// can produce binaries on all configured platforms.
+func main() {
+	fmt.Println("ImmutableOS build artifact")
+}
