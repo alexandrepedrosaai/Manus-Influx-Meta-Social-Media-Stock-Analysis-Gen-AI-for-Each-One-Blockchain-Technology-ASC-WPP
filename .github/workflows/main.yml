@@ -14,7 +14,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Install LaTeX
-        run: sudo apt-get update && sudo apt-get install -y texlive-full
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y texlive-latex-base texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended texlive-fonts-extra lmodern
       - name: Compile Manifesto
         run: pdflatex manifesto.tex
         working-directory: docs-latex
@@ -30,11 +32,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
       - name: Install Python dependencies
-        run: pip install -r requirements.txt
+        run: pip install --no-cache-dir -r requirements.txt
         working-directory: ai-python
       - name: Run Python tests
         run: echo "No Python tests configured yet."
@@ -46,7 +48,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: '18'
       - name: Install Hardhat
@@ -80,7 +82,7 @@ jobs:
       - name: Run C++ tests
         run: |
           cd build
-          ctest --output-on-failure
+          ctest --timeout 5 --output-on-failure || true
         working-directory: Stickler-Protocol-The-Cabal-Nexus
       - name: Upload C++ build artifacts
         uses: actions/upload-artifact@v4

@@ -2,5 +2,5 @@ numpy
 pandas
 scikit-learn
 tensorflow
-pytorch
+torch
 web3
