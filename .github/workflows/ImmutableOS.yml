@@ -60,11 +60,13 @@ jobs:
   build-windows:
     runs-on: windows-latest
     steps:
+      - name: Enable long paths on Windows
+        shell: pwsh
+        run: |
+          git config --system core.longpaths true
+
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          # Fix: "Filename too long" on Windows due to long repo name + file paths
-          path: src
 
       - name: Setup Go
         uses: actions/setup-go@v5
@@ -73,26 +75,22 @@ jobs:
 
       - name: Build Windows binary
         shell: bash
-        working-directory: src
         run: |
           mkdir -p build/windows/bin
           GOOS=windows GOARCH=amd64 go build -o build/windows/bin/app.exe main.go
 
       - name: Generate SBOM
         shell: bash
-        working-directory: src
         run: |
           GOOS=windows bash ./scripts/generate-sbom.sh > sbom-windows.json
 
       - name: Generate Attention
         shell: bash
-        working-directory: src
         run: |
           GOOS=windows bash ./scripts/generate-attention.sh > attention-windows.json
 
       - name: Generate Immutable manifest
         shell: bash
-        working-directory: src
         run: |
           GOOS=windows bash ./scripts/generate-immutable.sh > immutable-windows.json
 
@@ -101,10 +99,10 @@ jobs:
         with:
           name: windows-artifacts
           path: |
-            src/build/windows/bin/*
-            src/sbom-windows.json
-            src/attention-windows.json
-            src/immutable-windows.json
+            build/windows/bin/*
+            sbom-windows.json
+            attention-windows.json
+            immutable-windows.json
 
   build-macos:
     runs-on: macos-latest
