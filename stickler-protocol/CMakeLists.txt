@@ -20,8 +20,8 @@ foreach(SOURCE_FILE ${ROOT_SOURCES})
     add_executable(${SAFE_NAME} ${SOURCE_FILE})
 endforeach()
 
-# Build files in Input/output as separate executables
-file(GLOB IO_SOURCES "${PROJECT_SOURCE_DIR}/Input/output/*.cpp")
+# Build files in io/ as separate executables
+file(GLOB IO_SOURCES "${PROJECT_SOURCE_DIR}/io/*.cpp")
 foreach(SOURCE_FILE ${IO_SOURCES})
     get_filename_component(EXEC_NAME ${SOURCE_FILE} NAME_WE)
     string(REGEX REPLACE "[^a-zA-Z0-9_]" "_" SAFE_NAME "io_${EXEC_NAME}")

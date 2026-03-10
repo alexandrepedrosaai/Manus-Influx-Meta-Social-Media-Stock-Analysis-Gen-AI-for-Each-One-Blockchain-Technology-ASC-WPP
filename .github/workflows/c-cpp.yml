@@ -20,18 +20,18 @@ jobs:
           sudo apt-get install -y build-essential cmake
 
       - name: Configure CMake
-        working-directory: Stickler-Protocol-The-Cabal-Nexus
+        working-directory: stickler-protocol
         run: |
           mkdir -p build
           cd build
           cmake ..
 
       - name: Build all executables
-        working-directory: Stickler-Protocol-The-Cabal-Nexus/build
+        working-directory: stickler-protocol/build
         run: make
 
       - name: Verify build artifacts
-        working-directory: Stickler-Protocol-The-Cabal-Nexus/build
+        working-directory: stickler-protocol/build
         run: |
           echo "Built executables:"
           find . -maxdepth 1 -type f -executable | sort
@@ -40,4 +40,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: cpp-executables
-          path: Stickler-Protocol-The-Cabal-Nexus/build/
+          path: stickler-protocol/build/

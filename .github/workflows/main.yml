@@ -84,24 +84,24 @@ jobs:
           mkdir -p build
           cd build
           cmake ..
-        working-directory: Stickler-Protocol-The-Cabal-Nexus
+        working-directory: stickler-protocol
       - name: Build project
         run: |
           cd build
           make
-        working-directory: Stickler-Protocol-The-Cabal-Nexus
+        working-directory: stickler-protocol
       - name: Verify C++ build
         run: |
           cd build
           echo "Built executables:"
           find . -maxdepth 1 -type f -executable | wc -l
           echo "Build verification complete."
-        working-directory: Stickler-Protocol-The-Cabal-Nexus
+        working-directory: stickler-protocol
       - name: Upload C++ build artifacts
         uses: actions/upload-artifact@v4
         with:
           name: cpp-build
-          path: Stickler-Protocol-The-Cabal-Nexus/build/
+          path: stickler-protocol/build/
 
   deploy:
     if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
