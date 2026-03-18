@@ -39,6 +39,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Setup MSVC Developer Command Prompt
+        if: matrix.os == 'windows-latest'
+        uses: ilammy/msvc-dev-cmd@v1
+
       - name: Set reusable strings
         id: strings
         shell: bash
