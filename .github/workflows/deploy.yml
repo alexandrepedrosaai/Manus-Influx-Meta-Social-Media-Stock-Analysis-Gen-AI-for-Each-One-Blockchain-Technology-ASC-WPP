@@ -27,12 +27,11 @@ jobs:
           fetch-depth: 0
 
       - name: Generate dynamic site
+        env:
+          GITHUB_RUN_NUMBER: "${{ github.run_number }}"
+          GITHUB_SHA: "${{ github.sha }}"
         run: |
-          python3 scripts/generate_site.py \
-            --template site/index.html \
-            --output _site/index.html \
-            --run-number "${{ github.run_number }}" \
-            --commit-sha "${{ github.sha }}"
+          python3 scripts/generate_site.py ./_site
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
